@@ -9,8 +9,6 @@
 import SpriteKit
 import GameplayKit
 
-TODO: REMOVE ME
-
 class GameScene: SKScene {
     
     let player = SKSpriteNode(imageNamed: "playerShip")
