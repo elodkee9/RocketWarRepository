@@ -17,7 +17,9 @@
 		A63B2AFA21AAFD40008F9BF5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A63B2AF821AAFD40008F9BF5 /* LaunchScreen.storyboard */; };
 		A63B2B0521AAFD40008F9BF5 /* Rocket_WarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A63B2B0421AAFD40008F9BF5 /* Rocket_WarTests.swift */; };
 		A63B2B1021AAFD40008F9BF5 /* Rocket_WarUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A63B2B0F21AAFD40008F9BF5 /* Rocket_WarUITests.swift */; };
+		A68A6DB921BFDD0A007E8C8E /* theboldfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A68A6DB821BFDD0A007E8C8E /* theboldfont.ttf */; };
 		A68A79BF21AB07E600731E79 /* bulletSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A68A79BE21AB07E600731E79 /* bulletSound.mp3 */; };
+		A69AE74E21BE8D780000DB67 /* explosionSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A69AE74D21BE8D780000DB67 /* explosionSound.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +56,9 @@
 		A63B2B0B21AAFD40008F9BF5 /* Rocket WarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Rocket WarUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A63B2B0F21AAFD40008F9BF5 /* Rocket_WarUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rocket_WarUITests.swift; sourceTree = "<group>"; };
 		A63B2B1121AAFD40008F9BF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A68A6DB821BFDD0A007E8C8E /* theboldfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = theboldfont.ttf; sourceTree = "<group>"; };
 		A68A79BE21AB07E600731E79 /* bulletSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bulletSound.mp3; sourceTree = "<group>"; };
+		A69AE74D21BE8D780000DB67 /* explosionSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = explosionSound.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +115,8 @@
 				A63B2AEF21AAFD3F008F9BF5 /* GameScene.swift */,
 				A63B2AF121AAFD3F008F9BF5 /* GameViewController.swift */,
 				A68A79BE21AB07E600731E79 /* bulletSound.mp3 */,
+				A69AE74D21BE8D780000DB67 /* explosionSound.mp3 */,
+				A68A6DB821BFDD0A007E8C8E /* theboldfont.ttf */,
 				A63B2AF321AAFD3F008F9BF5 /* Main.storyboard */,
 				A63B2AF621AAFD40008F9BF5 /* Assets.xcassets */,
 				A63B2AF821AAFD40008F9BF5 /* LaunchScreen.storyboard */,
@@ -245,8 +251,10 @@
 				A63B2AEC21AAFD3F008F9BF5 /* GameScene.sks in Resources */,
 				A63B2AF721AAFD40008F9BF5 /* Assets.xcassets in Resources */,
 				A63B2AFA21AAFD40008F9BF5 /* LaunchScreen.storyboard in Resources */,
+				A68A6DB921BFDD0A007E8C8E /* theboldfont.ttf in Resources */,
 				A68A79BF21AB07E600731E79 /* bulletSound.mp3 in Resources */,
 				A63B2AEE21AAFD3F008F9BF5 /* Actions.sks in Resources */,
+				A69AE74E21BE8D780000DB67 /* explosionSound.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
