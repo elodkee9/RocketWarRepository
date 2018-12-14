@@ -9,9 +9,10 @@
 import SpriteKit
 import GameplayKit
 
+var gameScore = 0
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    var gameScore = 0
     let scoreLabel = SKLabelNode(fontNamed: "The Bold Font")
     
     var livesNumber = 3
@@ -21,6 +22,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let bulletSound = SKAction.playSoundFileNamed("bulletSound.mp3", waitForCompletion: false)
     let explosionSound = SKAction.playSoundFileNamed("explosionSound.mp3", waitForCompletion: false)
+    
+    enum gameState{
+        case preGame //when the game state is before the start of the game
+        case inGame //when the game state is during the game
+        case afterGame //when the game state is after the game
+    }
+    
+    var currentGameState = gameState.inGame
     
     struct PhysicsCategories{
         static let None : UInt32 = 0
@@ -58,6 +67,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
  
     
     override func didMove(to view: SKView) {
+        
+        gameScore = 0
         
         self.physicsWorld.contactDelegate = self
         
@@ -106,6 +117,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    func runGameOver(){
+        
+        currentGameState = gameState.afterGame
+        
+        
+        self.removeAllActions()
+        
+        self.enumerateChildNodes(withName: "Bullet"){bullet, stop in
+            
+            bullet.removeAllActions()
+        }
+        
+        self.enumerateChildNodes(withName: "Enemy"){enemy, stop in
+            
+            enemy.removeAllActions()
+        }
+        
+        let changeSceneAction = SKAction.run(changeScene)
+        let waitToChangeScene = SKAction.wait(forDuration: 1)
+        let changeSceneSequence = SKAction.sequence([waitToChangeScene, changeSceneAction])
+        self.run(changeSceneSequence)
+        
+    }
+    
+    func changeScene(){
+    
+        let sceneToMoveTo = GameOverScene(size: self.size)
+        sceneToMoveTo.scaleMode = self.scaleMode
+        let myTransition = SKTransition.fade(withDuration: 0.5)
+        self.view!.presentScene(sceneToMoveTo, transition: myTransition)
+    }
+    
     func loseALife(){
         
         livesNumber -= 1
@@ -115,6 +158,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let scaleDown = SKAction.scale(to: 1, duration: 0.2)
         let scaleSequence = SKAction.sequence([scaleUp, scaleDown])
         livesLabel.run(scaleSequence)
+        
+        if livesNumber == 0 {
+            runGameOver()
+        }
         
     }
     
@@ -148,6 +195,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             body1.node?.removeFromParent()
             body2.node?.removeFromParent()
+            
+            runGameOver()
         }
         
         if body1.categoryBitMask == PhysicsCategories.Bullet && body2.categoryBitMask == PhysicsCategories.Enemy && (body2.node?.position.y)! < self.size.height{
@@ -196,6 +245,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func fireBullet() {
         let bullet = SKSpriteNode(imageNamed: "bullet")
+        bullet.name = "Bullet"
         bullet.setScale(1)
         bullet.position = player.position
         bullet.zPosition = 1
@@ -222,6 +272,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2)
         
         let enemy = SKSpriteNode(imageNamed: "enemyShip")
+        enemy.name = "Enemy"
         enemy.setScale(1)
         enemy.position = startPoint
         enemy.zPosition = 2
@@ -236,8 +287,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let deleteEnemy = SKAction.removeFromParent()
         let loseALifeAction = SKAction.run(loseALife)
         let enemySequence = SKAction.sequence([moveEnemy, deleteEnemy, loseALifeAction])
-        enemy.run(enemySequence)
         
+        if currentGameState == gameState.inGame{
+            
+            enemy.run(enemySequence)
+        }
         //bizonyos szogben jonnek be a kepbe az ellensegek, megdolve
         let dx = endPoint.x - startPoint.x
         let dy = endPoint.y - startPoint.y
@@ -251,8 +305,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //erintesre kilo golyot
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        fireBullet()
         
+        if currentGameState == gameState.inGame{
+        
+            fireBullet()
+        }
+            
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -264,7 +322,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let amountDragged = pointOfTouch.x - previousPointOfTouch.x
             
-            player.position.x += amountDragged
+            if currentGameState == gameState.inGame{
+                
+                player.position.x += amountDragged
+            }
             
             // beallitva, hogy ne menjen ki a tankunk a kepernyobol, maradjon a jatekterben
             
