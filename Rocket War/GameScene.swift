@@ -23,13 +23,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let bulletSound = SKAction.playSoundFileNamed("bulletSound.mp3", waitForCompletion: false)
     let explosionSound = SKAction.playSoundFileNamed("explosionSound.mp3", waitForCompletion: false)
     
+    let tapToStartLabel = SKLabelNode(fontNamed: "The Bold Font")
+    
     enum gameState{
         case preGame //when the game state is before the start of the game
         case inGame //when the game state is during the game
         case afterGame //when the game state is after the game
     }
     
-    var currentGameState = gameState.inGame
+    var currentGameState = gameState.preGame
     
     struct PhysicsCategories{
         static let None : UInt32 = 0
@@ -80,7 +82,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
        
         player.setScale(1)
-        player.position = CGPoint(x: self.size.width/2, y: self.size.height * 0.2)
+        player.position = CGPoint(x: self.size.width/2, y: 0 - player.size.height)
         player.zPosition = 2
         
         // beallitja fizikai testnek a tankot, hogy majd esemenyeket tudjunk hozzaadni az objektumokhoz (pl. robbanas, utkozes)
@@ -95,7 +97,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.fontSize = 70
         scoreLabel.fontColor = SKColor.white
         scoreLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
-        scoreLabel.position = CGPoint(x: self.size.width*0.15, y: self.size.height*0.9)
+        scoreLabel.position = CGPoint(x: self.size.width*0.15, y: self.size.height + scoreLabel.frame.size.height)
         scoreLabel.zPosition = 100
         self.addChild(scoreLabel)
         
@@ -103,12 +105,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         livesLabel.fontSize = 70
         livesLabel.fontColor = SKColor.white
         livesLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
-        livesLabel.position = CGPoint(x: self.size.width*0.85, y: self.size.height*0.9)
+        livesLabel.position = CGPoint(x: self.size.width*0.85, y: self.size.height + livesLabel.frame.size.height)
         livesLabel.zPosition = 100
         self.addChild(livesLabel)
         
+        let moveOnToScreenAction = SKAction.moveTo(y: self.size.height*0.9, duration: 0.3)
+        scoreLabel.run(moveOnToScreenAction)
+        livesLabel.run(moveOnToScreenAction)
         
-        startNewLevel()
+        
+        tapToStartLabel.text = "Tap To Begin"
+        tapToStartLabel.fontSize = 100
+        tapToStartLabel.fontColor = SKColor.white
+        tapToStartLabel.zPosition = 1
+        tapToStartLabel.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
+        tapToStartLabel.alpha = 0
+        self.addChild(tapToStartLabel)
+ 
+        let fadeInAction = SKAction.fadeIn(withDuration: 0.3)
+        tapToStartLabel.run(fadeInAction)
+        
+        
     }
     
     func addScore(){
@@ -147,6 +164,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         sceneToMoveTo.scaleMode = self.scaleMode
         let myTransition = SKTransition.fade(withDuration: 0.5)
         self.view!.presentScene(sceneToMoveTo, transition: myTransition)
+    }
+    
+    func startGame(){
+        
+        currentGameState = gameState.inGame
+        
+        let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
+        let deleteAction = SKAction.removeFromParent()
+        let deleteSequence = SKAction.sequence([fadeOutAction, deleteAction])
+        tapToStartLabel.run(deleteSequence)
+        
+        let moveShipOntoScreenAction = SKAction.moveTo(y: self.size.height*0.2, duration: 0.5)
+        let startLevelAction = SKAction.run(startNewLevel)
+        let startGameSequence = SKAction.sequence([moveShipOntoScreenAction, startLevelAction])
+        player.run(startGameSequence)
+        
+        
     }
     
     func loseALife(){
@@ -305,8 +339,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //erintesre kilo golyot
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
+        if currentGameState == gameState.preGame{
+            
+            startGame()
+        }
         
-        if currentGameState == gameState.inGame{
+        else if currentGameState == gameState.inGame{
         
             fireBullet()
         }
